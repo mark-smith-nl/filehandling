@@ -63,7 +63,7 @@
         VALUES ( #{originalFilename}
                , #{filename}
                , #{filetype}
-               , #{encoding}
+               , #{encoding, typeHandler=nl.smith.filehandling.persistence.typehandler.FiletypeTypeHandler}
                , #{description}
                , #{bytes})
     </insert>

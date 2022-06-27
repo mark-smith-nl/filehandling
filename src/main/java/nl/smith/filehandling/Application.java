@@ -47,16 +47,9 @@ public class Application implements CommandLineRunner {
         URL resource1 = Application.class.getClassLoader().getResource("file/myData1.txt");
         URL resource2 = Application.class.getClassLoader().getResource("file/399px-Colisa_lalia.jpg");
 
-        System.out.println(new File(resource1.getFile()).getName());
-     //   persistentFileService.save(new PersistentFile(resource1.getFile(), Filetype.TEXT, Encoding.UTF_8, "An UTF-8 encoded textfile"));
-      //  persistentFileService.save(new PersistentFile(resource2.getFile(), Filetype.IMAGE, null, "An image of Colisa lalia"));
-
-
-        //  persistentFileService.downloadPersistenFile("399px-Colisa_lalia.jpg", "/Users/m.smithhva.nl/tmp/colisa.jpg");
-
-       /* if (persistentFile.getFiletype().equals(PersistentFile.Filetype.TEXT)){
-            String s = new String(persistentFile.getBytes(), persistentFile.getEncoding().getCharset());
-            System.out.println(s);
-        }*/
+        if (resource1 != null && persistentFileService.getPersistentFileByFilename(new File(resource1.getFile()).getName()) == null)
+            persistentFileService.save(new PersistentFile(resource1.getFile(), Filetype.TEXT, Encoding.UTF_8, "An UTF-8 encoded textfile"));
+        if (resource2 != null && persistentFileService.getPersistentFileByFilename(new File(resource2.getFile()).getName()) == null)
+            persistentFileService.save(new PersistentFile(resource2.getFile(), Filetype.TEXT, Encoding.UTF_8, "An image file"));
     }
 }
