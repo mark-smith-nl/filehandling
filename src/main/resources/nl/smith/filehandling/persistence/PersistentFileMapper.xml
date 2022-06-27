@@ -2,15 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="nl.smith.filehandling.persistence.PersistentFileMapper">
 
-    <resultMap id="persistentFileResultMap" type="nl.smith.filehandling.persistence.PersistentFileMapper" autoMapping="true">
-
+    <resultMap id="persistentFileResultMap" type="nl.smith.filehandling.domain.PersistentFile" >
+        <id column="file_id" property="id"/>
+        <result column="original_filename" property="originalFilename"/>
+        <result column="filename" property="filename"/>
+        <result column="filetype" property="filetype"/>
+        <result column="encoding" property="encoding" typeHandler="nl.smith.filehandling.persistence.typehandler.FiletypeTypeHandler"/>
+        <result column="description" property="description"/>
     </resultMap>
+
 
 
     <select id="getPersistenFileById" resultType="nl.smith.filehandling.domain.PersistentFile" resultMap="persistentFileResultMap">
         SELECT *
-        from file
-        where file_id = ${id}
+        FROM file
+        WHERE file_id = ${id}
     </select>
 
     <select id="getPersistenFileByFilename" resultType="nl.smith.filehandling.domain.PersistentFile">
@@ -18,11 +24,30 @@
              , original_filename
              , filename
              , filetype
-             , description
              , encoding
+             , description
              , content as bytes
-        from file
-        where filename = #{filename}
+        FROM file
+        WHERE filename = #{filename}
+    </select>
+
+    <select id="findAll_" resultType="nl.smith.filehandling.domain.PersistentFile">
+        SELECT file_id as id
+             , original_filename
+             , filename
+             , filetype
+             , encoding
+             , description
+        FROM file
+        WHERE filename = #{filename}
+    </select>
+
+    <select id="findAll" resultType="nl.smith.filehandling.domain.PersistentFile" resultMap="persistentFileResultMap">
+        select file.*
+        from (values (1, 'original_filename_Mark', 'Mark', 'TEXT', 'UTF-8', 'Description Mark')
+                   , (2, 'original_filename_Tom', 'Tom', 'TEXT', 'UTF-8', 'Description Tom')
+                   , (3, 'original_filename_Frank', 'Frank', 'TEXT', 'UTF-8', 'Description Frank')
+             ) file(file_id, original_filename, filename, filetype, encoding, description);
     </select>
 
     <insert id="save" parameterType="nl.smith.filehandling.domain.PersistentFile"
@@ -32,20 +57,19 @@
         INSERT INTO file( original_filename
                         , filename
                         , filetype
-                        , description
                         , encoding
+                        , description
                         , content)
         VALUES ( #{originalFilename}
                , #{filename}
                , #{filetype}
-               , #{description}
                , #{encoding}
+               , #{description}
                , #{bytes})
     </insert>
 
     <delete id="deleteAll">
         TRUNCATE file CASCADE;
     </delete>
-
 
 </mapper>
