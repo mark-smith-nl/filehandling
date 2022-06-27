@@ -1,0 +1,4 @@
+Name=Mark Smith
+age=57
+Address=Willem de Zwijgerweg 51 Geldermalsen
+$€¥£

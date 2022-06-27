@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="nl.smith.filehandling.persistence.PersistentFileMapper">
+
+    <resultMap id="persistentFileResultMap" type="nl.smith.filehandling.persistence.PersistentFileMapper" autoMapping="true">
+
+    </resultMap>
+
+
+    <select id="getPersistenFileById" resultType="nl.smith.filehandling.domain.PersistentFile" resultMap="persistentFileResultMap">
+        SELECT *
+        from file
+        where file_id = ${id}
+    </select>
+
+    <select id="getPersistenFileByFilename" resultType="nl.smith.filehandling.domain.PersistentFile">
+        SELECT file_id as id
+             , original_filename
+             , filename
+             , filetype
+             , description
+             , encoding
+             , content as bytes
+        from file
+        where filename = #{filename}
+    </select>
+
+    <insert id="save" parameterType="nl.smith.filehandling.domain.PersistentFile"
+            useGeneratedKeys="true"
+            keyColumn="file_id"
+            keyProperty="id">
+        INSERT INTO file( original_filename
+                        , filename
+                        , filetype
+                        , description
+                        , encoding
+                        , content)
+        VALUES ( #{originalFilename}
+               , #{filename}
+               , #{filetype}
+               , #{description}
+               , #{encoding}
+               , #{bytes})
+    </insert>
+
+    <delete id="deleteAll">
+        TRUNCATE file CASCADE;
+    </delete>
+
+
+</mapper>
