@@ -7,6 +7,8 @@ public enum Encoding {
     UTF_8("UTF-8", StandardCharsets.UTF_8),
     UTF_16("UTF-16", StandardCharsets.UTF_16);
 
+    public static final Encoding NO_ENCODING = null;
+
     private final String type;
 
     private final Charset charset;

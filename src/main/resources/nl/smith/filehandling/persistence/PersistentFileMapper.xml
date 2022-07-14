@@ -7,7 +7,7 @@
         <result column="original_filename" property="originalFilename"/>
         <result column="filename" property="filename"/>
         <result column="filetype" property="filetype"/>
-        <result column="encoding" property="encoding" typeHandler="nl.smith.filehandling.persistence.typehandler.FiletypeTypeHandler"/>
+        <result column="encoding" property="encoding" typeHandler="nl.smith.filehandling.persistence.typehandler.EncodingTypeHandler"/>
         <result column="description" property="description"/>
     </resultMap>
 
@@ -19,8 +19,8 @@
         WHERE file_id = ${id}
     </select>
 
-    <select id="getPersistenFileByFilename" resultType="nl.smith.filehandling.domain.PersistentFile">
-        SELECT file_id as id
+    <select id="getPersistenFileByFilename" resultType="nl.smith.filehandling.domain.PersistentFile" resultMap="persistentFileResultMap">
+        SELECT file_id
              , original_filename
              , filename
              , filetype
@@ -63,7 +63,7 @@
         VALUES ( #{originalFilename}
                , #{filename}
                , #{filetype}
-               , #{encoding, typeHandler=nl.smith.filehandling.persistence.typehandler.FiletypeTypeHandler}
+               , #{encoding, typeHandler=nl.smith.filehandling.persistence.typehandler.EncodingTypeHandler}
                , #{description}
                , #{bytes})
     </insert>

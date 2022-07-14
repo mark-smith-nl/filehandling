@@ -8,5 +8,5 @@ create table file
     filetype          varchar(16),
     encoding          varchar(16),
     description       varchar(256),
-    content           bytea
+    content           bytea not null
 )

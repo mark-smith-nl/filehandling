@@ -41,13 +41,19 @@ public class PersistentFileService {
         return persistentFileMapper.getPersistenFileByFilename(filename);
     }
 
-    public void downloadPersistenFile(@NonNull String filename, @NonNull String newName) {
-        PersistentFile persistenFile = persistentFileMapper.getPersistenFileByFilename(filename);
-        if (persistenFile == null) return;
+    public PersistentFile getPersistentFileByFilename(@NonNull PersistentFile persistentFile) {
+        return getPersistentFileByFilename(persistentFile.getFilename());
+    }
 
+    public void downloadPersistentFile(@NonNull String filename, @NonNull String newName) {
+        downloadPersistentFile(persistentFileMapper.getPersistenFileByFilename(filename), newName);
+    }
+
+    public void downloadPersistentFile(@NonNull PersistentFile persistentFile, @NonNull String newName) {
+        if (persistentFile.isNew() || persistentFile.getBytes() == null) return;
         File file = new File(newName);
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            outputStream.write(persistenFile.getBytes());
+            outputStream.write(persistentFile.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

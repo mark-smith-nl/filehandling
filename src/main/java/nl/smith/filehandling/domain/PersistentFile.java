@@ -16,9 +16,7 @@ import static java.lang.String.format;
  *
  * @author m.smithhva.nl
  */
-public class PersistentFile {
-
-    private Long id;
+public class PersistentFile extends AbstractEntity {
 
     private String originalFilename;
 
@@ -32,22 +30,18 @@ public class PersistentFile {
 
     private byte[] bytes;
 
-    public PersistentFile() {
+    /**
+     * Constructor used by MyBatis
+     */
+    private PersistentFile() {
+
     }
 
-    public PersistentFile(String filePath, Filetype filetype, Encoding encoding, String description) throws IOException {
-        this(getFile(filePath), filetype, encoding, description);
+    private PersistentFile(String filename) {
+        this.filename = filename;
     }
 
-    public PersistentFile(URL url, Filetype filetype, Encoding encoding, String description) throws IOException {
-        this(new File(url.getFile()), filetype, encoding, description);
-    }
-
-    public PersistentFile(File file, Filetype filetype, Encoding encoding, String description) throws IOException {
-        this(file.getName(), file.getName(), filetype, description, encoding, Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-    }
-
-    public PersistentFile(String originalFilename, String filename, Filetype filetype, String description, Encoding encoding, byte[] bytes) {
+    private PersistentFile(String originalFilename, String filename, Filetype filetype, Encoding encoding, String description, byte[] bytes) {
         this.originalFilename = originalFilename;
         this.filename = filename;
         this.filetype = filetype;
@@ -56,14 +50,51 @@ public class PersistentFile {
         this.bytes = bytes;
     }
 
-    private static File getFile(String filePath) {
-        File file = new File(filePath);
-        if (! file.exists()) throw new IllegalStateException(format("File %s does not exist", filePath));
-        return file;
+    /**
+     * Create an instance of {@link PersistentFile with no content (bytes)}
+     * @param url
+     * @return
+     */
+    public static PersistentFile valueOf(URL url) {
+        if (url == null) throw new IllegalArgumentException();
+        return new PersistentFile(new File(url.getFile()).getName());
     }
 
-    public Long getId() {
-        return id;
+    public static PersistentFile valueOf(URL url, Filetype filetype) {
+        return valueOf(url, filetype, null);
+    }
+
+    public static PersistentFile valueOf(URL url, String filename, Filetype filetype) {
+        return valueOf(url, filetype, null);
+    }
+
+    public static PersistentFile valueOf(URL url, Filetype filetype, String description) {
+        return valueOf(url, filetype, null, description);
+    }
+
+    public static PersistentFile valueOf(URL url, Filetype filetype, Encoding encoding, String description) {
+        if (url == null) throw new IllegalArgumentException();
+
+        return valueOf(new File(url.getFile()), filetype, encoding, description);
+    }
+
+    public static PersistentFile valueOf(File file, Filetype filetype) {
+        return valueOf(file, filetype, null);
+    }
+
+    public static PersistentFile valueOf(File file, Filetype filetype, String description) {
+        return valueOf(file, filetype, null, description);
+    }
+
+    public static PersistentFile valueOf(File file, Filetype filetype, Encoding encoding, String description) {
+        if (file == null || !file.exists() || file.isDirectory()) throw new IllegalArgumentException();
+
+        try {
+            return new PersistentFile(file.getName(), file.getName(), filetype, encoding, description,
+                    Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public String getOriginalFilename() {

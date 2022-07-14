@@ -13,9 +13,9 @@ import java.sql.SQLException;
 /**
  * @author m.smithhva.nl
  */
-public class FiletypeTypeHandler extends EnumTypeHandler<Encoding> {
+public class EncodingTypeHandler extends EnumTypeHandler<Encoding> {
 
-    public FiletypeTypeHandler(Class<Encoding> type) {
+    public EncodingTypeHandler(Class<Encoding> type) {
         super(type);
     }
 
